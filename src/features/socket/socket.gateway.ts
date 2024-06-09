@@ -10,7 +10,16 @@ import {
 import { Server, Socket } from 'socket.io';
 import { IUser } from 'src/common/interfaces/user.interface';
 
-@WebSocketGateway(3002, { cors: true })
+@WebSocketGateway({
+  cors: {
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5500/test.html'],
+    credentials: true,
+    transports: ['websocket', 'polling'],
+    secure: true,
+    method: ['GET', 'POST'],
+  },
+  transports: ['websocket', 'polling'],
+})
 export class SocketGateWay {
   constructor(private readonly jwtService: JwtService) {}
 
@@ -31,7 +40,7 @@ export class SocketGateWay {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_ACCESS_SECRET,
       });
-    
+
       console.log(`Client ${payload?.email} connect successfully`);
     } catch (err) {
       client.disconnect();
