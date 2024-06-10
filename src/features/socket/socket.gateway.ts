@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5500/test.html'],
+    origin: ['http://localhost:5173'],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,

@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { User } from 'src/core/decorators/user.decorator';
-import { UpdateQuantityDto } from './dto/update-quantity.dto';
 import { AddToCartDto } from './dto/add-to-cart.dto';
+import { UpdateQuantityDto } from './dto/update-quantity.dto';
 
 @Controller('cart')
 export class CartController {

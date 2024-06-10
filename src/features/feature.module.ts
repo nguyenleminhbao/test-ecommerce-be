@@ -11,6 +11,7 @@ import { SocketModule } from './socket/socket.module';
 import { CustomerModule } from './customer/customer.module';
 import { UploadModule } from './upload/upload.module';
 import { LivestreamModule } from './livetream/livestream.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LivestreamModule } from './livetream/livestream.module';
     CustomerModule,
     UploadModule,
     LivestreamModule,
+    CommentModule,
   ],
 })
 export class FeatureModule {}
