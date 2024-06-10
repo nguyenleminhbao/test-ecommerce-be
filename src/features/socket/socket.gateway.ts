@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'https://test-ecommerce-fe.vercel.app'],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,
