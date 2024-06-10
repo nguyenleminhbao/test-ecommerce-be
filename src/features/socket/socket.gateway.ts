@@ -8,7 +8,6 @@ import {
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
-import { IUser } from 'src/common/interfaces/user.interface';
 
 @WebSocketGateway(3002, { cors: true })
 export class SocketGateWay {
@@ -31,7 +30,7 @@ export class SocketGateWay {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_ACCESS_SECRET,
       });
-    
+
       console.log(`Client ${payload?.email} connect successfully`);
     } catch (err) {
       client.disconnect();
