@@ -15,6 +15,8 @@ model User {
   phone           String?          @default("")
   address         String?          @default("")
   avatar          String           @default("")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
   firstName       String           @default("")
   lastName        String           @default("")
   status          STATUS           @default(ACTIVE)
@@ -26,8 +28,6 @@ model User {
   orders          Order[]
   paymentAccounts PaymentAccount[]
   shop            Shop?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
 }
 
 model PaymentAccount {
@@ -35,29 +35,29 @@ model PaymentAccount {
   userId        String
   accountNumber String
   bank          String
-  user          User     @relation(fields: [userId], references: [id])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model Address {
   id            String   @id @default(uuid())
   userId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   city          String
   streetAddress String
   user          User     @relation(fields: [userId], references: [id])
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
 }
 
 model Cart {
   id        String     @id @default(uuid())
   userId    String     @unique
   status    STATUS     @default(ACTIVE)
-  user      User       @relation(fields: [userId], references: [id])
-  cartItems CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
 }
 
 model CartItem {
@@ -66,12 +66,12 @@ model CartItem {
   image     String
   price     Float
   quantity  Int
+  createdAt DateTime @default(now())
   title     String?
   variantId Float?
   shopId    String?
   shopName  String?
   cart      Cart     @relation(fields: [cartId], references: [id])
-  createdAt DateTime @default(now())
 }
 
 model Shop {
@@ -83,14 +83,14 @@ model Shop {
   shopName            String   @unique
   status              STATUS   @default(ACTIVE)
   hostVersion         String   @default("2024-04")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
   userId              String   @unique
   baseUrl             String
   shopAvatar          String?
   shopBanners         String[] @default(["", "", ""])
   reels               Reel[]
   user                User     @relation(fields: [userId], references: [id])
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
 }
 
 model Reel {
@@ -99,9 +99,9 @@ model Reel {
   video     String
   title     String
   shopId    String
-  shop      Shop     @relation(fields: [shopId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  shop      Shop     @relation(fields: [shopId], references: [id])
 }
 
 model ShopRaw {
@@ -112,11 +112,11 @@ model ShopRaw {
   urlStore            String
   shopName            String
   hostVersion         String   @default("2024-04")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
   userId              String
   shopAvatar          String?
   shopAvatarId        String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
 }
 
 model Order {
@@ -129,12 +129,12 @@ model Order {
   paymentMethod String
   phoneNumber   String
   status        STATUS_ORDER
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   userId        String
   avatarUser    String?
   email         String?
   user          User         @relation(fields: [userId], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
 }
 
 model Livestream {
@@ -142,10 +142,10 @@ model Livestream {
   roomId    String
   role      String   @default("Host")
   userId    String
-  shopName  String
-  isHost    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  shopName  String
+  isHost    Boolean  @default(false)
 }
 
 model Comment {
@@ -155,11 +155,11 @@ model Comment {
   numOfStar     Int?
   optionProduct String?
   imageUrls     String[]     @default([])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   typeComment   TYPE_COMMENT @default(PRODUCT)
   etag          String
   user          User         @relation(fields: [userId], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
 }
 
 enum TYPE_COMMENT {
