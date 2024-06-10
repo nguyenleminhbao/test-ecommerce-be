@@ -1,3 +1,4 @@
+import { TYPE_COMMENT } from '@prisma/client';
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateCommentDto {
@@ -15,8 +16,8 @@ export class CreateCommentDto {
   imageUrls: string[];
 
   @IsNotEmpty()
-  // typeComment: TYPE_COMMENT;
-  typeComment: string;
+  typeComment: TYPE_COMMENT;
+  //typeComment: string;
 
   @IsNotEmpty()
   etag: string | number; // id of reel, feed, product
