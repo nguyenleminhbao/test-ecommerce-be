@@ -273,9 +273,18 @@ export class ShopService {
 
   async getOneShop(shopId: string) {
     try {
-      const shop = JSON.parse(
-        await this.redisService.getValue(`shop:${shopId}`),
-      ) as IShop;
+      // const shop = JSON.parse(
+      //   await this.redisService.getValue(`shop:${shopId}`),
+      // ) as IShop;
+
+      const shop = await this.prismaService.shop.findFirst({
+        where: {
+          id: shopId,
+        },
+        include: {
+          reels: true,
+        },
+      });
 
       return {
         type: 'Success',
@@ -284,6 +293,8 @@ export class ShopService {
           shopId: shop.id,
           shopName: shop.shopName,
           shopAvatar: shop.shopAvatar,
+          shopBanners: shop.shopBanners,
+          reels: shop.reels,
         },
       };
     } catch (err) {

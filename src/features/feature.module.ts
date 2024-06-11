@@ -12,6 +12,7 @@ import { CustomerModule } from './customer/customer.module';
 import { UploadModule } from './upload/upload.module';
 import { LivestreamModule } from './livetream/livestream.module';
 import { CommentModule } from './comment/comment.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CommentModule } from './comment/comment.module';
     UploadModule,
     LivestreamModule,
     CommentModule,
+    NewsModule,
   ],
 })
 export class FeatureModule {}

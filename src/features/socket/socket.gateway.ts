@@ -8,10 +8,11 @@ import {
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
+import { IUser } from 'src/common/interfaces/user.interface';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173', 'https://test-ecommerce-fe.vercel.app'],
+    origin: ['http://localhost:5173'],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,
