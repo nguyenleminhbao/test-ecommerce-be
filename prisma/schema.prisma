@@ -24,10 +24,10 @@ model User {
   role            ROLE             @default(CUSTOMER)
   addresses       Address[]
   cart            Cart?
+  comments        Comment[]
   orders          Order[]
   paymentAccounts PaymentAccount[]
   shop            Shop?
-  comments        Comment[]
 }
 
 model PaymentAccount {
@@ -95,14 +95,14 @@ model Shop {
 
 model Reel {
   id          String   @id @default(uuid())
-  view        Float    @default(0)
   video       String
   title       String
   shopId      String
-  description String?  @default("Description")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  view        Float    @default(0)
   status      STATUS   @default(ACTIVE)
+  description String?  @default("Description")
   shop        Shop     @relation(fields: [shopId], references: [id])
 }
 
@@ -128,14 +128,14 @@ model Order {
   cartItems     Json
   firstName     String
   lastName      String
-  avatarUser    String?
-  email         String?
   paymentMethod String
   phoneNumber   String
   status        STATUS_ORDER
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   userId        String
+  avatarUser    String?
+  email         String?
   user          User         @relation(fields: [userId], references: [id])
 }
 
@@ -144,10 +144,10 @@ model Livestream {
   roomId    String
   role      String   @default("Host")
   userId    String
-  shopName  String
-  isHost    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  shopName  String
+  isHost    Boolean  @default(false)
 }
 
 model Comment {
@@ -160,7 +160,7 @@ model Comment {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   typeComment   TYPE_COMMENT @default(PRODUCT)
-  etag          String // id of reel, feed, product
+  etag          String
   user          User         @relation(fields: [userId], references: [id])
 }
 

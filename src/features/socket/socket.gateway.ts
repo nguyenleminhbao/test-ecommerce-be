@@ -12,7 +12,7 @@ import { IUser } from 'src/common/interfaces/user.interface';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'https://test-ecommerce-be.onrender.com'],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,
