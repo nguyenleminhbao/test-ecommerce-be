@@ -20,6 +20,7 @@ export class CommentService {
           etag: dto.etag.toString(),
         },
       });
+
       if (comment) {
         return {
           type: 'Success',
@@ -45,10 +46,10 @@ export class CommentService {
     try {
       const comments = await this.prismaService.comment.findMany({
         where: {
-          etag: etag.toString(),
+          etag: etag,
         },
         orderBy: {
-          createdAt: 'asc',
+          createdAt: 'desc',
         },
         include: {
           user: {
@@ -59,6 +60,7 @@ export class CommentService {
           },
         },
       });
+
       if (comments) {
         return {
           type: 'Success',

@@ -1,8 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { ROLE } from '@prisma/client';
-import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
-import { randomInt } from 'crypto';
-import { IUser } from 'src/common/interfaces/user.interface';
 import { PrismaService } from 'src/database/prisma.service';
 import { SocketGateWay } from '../socket/socket.gateway';
 import { StreamCallbackDto } from './dto/streamCallback.dto';

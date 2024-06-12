@@ -104,8 +104,20 @@ export class ShopController {
     }
   }
 
+  @Public()
+  @Get('random-banner')
+  async randomBanner() {
+    try {
+      const response = await this.shopService.randomBanner();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @UseGuards(RoleGuard)
   @Delete(':shopId')
-  async deleteShop(@Admin() admin: IUser, @Param('shopId') shopId: string) {
+  async deleteShop(@Param('shopId') shopId: string) {
     try {
       const response = await this.shopService.deleteShop(shopId);
       return response;

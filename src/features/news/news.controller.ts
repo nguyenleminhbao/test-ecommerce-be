@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateReelDto } from './dto/create-reel.dto';
 import { Public } from 'src/core/decorators/public.decorator';
@@ -55,6 +55,16 @@ export class NewsController {
   async increateViewReel(@Body() { reelId }: { reelId: string }) {
     try {
       const response = await this.newsService.increateViewReel(reelId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Delete('reel/:reelId')
+  async deleteReel(@Param('reelId') reelId: string) {
+    try {
+      const response = await this.newsService.deleteReel(reelId);
       return response;
     } catch (err) {
       throw err;

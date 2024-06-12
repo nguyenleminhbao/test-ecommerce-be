@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -10,6 +12,7 @@ import { UploadService } from './upload.service';
 import { Public } from 'src/core/decorators/public.decorator';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
+import { UpdateReelDto } from './dto/update-reel.dto';
 
 @Controller('upload')
 export class UploadController {
@@ -44,6 +47,28 @@ export class UploadController {
     try {
       const response =
         await this.uploadService.updateShopAvatar(updateShopAvatar);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('update-reel')
+  async updateReel(@Body() updateReelDto: UpdateReelDto) {
+    try {
+      const response = await this.uploadService.updateReel(updateReelDto);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
+  @Delete('delete-file/:publicId')
+  async deleteFile(@Param('publicId') publicId: string) {
+    try {
+      const response = await this.uploadService.deleteFile(publicId);
+      return response;
     } catch (err) {
       throw err;
     }

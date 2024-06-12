@@ -6,6 +6,7 @@ import { CreateShopDto } from './dto/create-shop.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { IShop } from 'src/common/interfaces/shop.interface';
 import { getKeyShop } from 'src/utils/get-key-shop';
+import { getRandomArray } from 'src/utils/random-array';
 
 @Injectable()
 export class ShopService {
@@ -334,6 +335,29 @@ export class ShopService {
         message: {
           isShopOwner: false,
         },
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async randomBanner() {
+    try {
+      const shops = await this.prismaService.shop.findMany({
+        where: {
+          status: STATUS.ACTIVE,
+        },
+      });
+
+      const banners = shops.map((shop) => shop.shopBanners).flat();
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: getRandomArray(banners),
       };
     } catch (err) {
       return {

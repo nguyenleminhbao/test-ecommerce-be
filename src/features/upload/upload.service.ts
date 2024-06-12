@@ -7,6 +7,7 @@ import {
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
+import { UpdateReelDto } from './dto/update-reel.dto';
 
 export type CloudinaryResponse = UploadApiResponse | UploadApiErrorResponse;
 
@@ -29,7 +30,7 @@ export class UploadService {
       return {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,
-        message: err,
+        message: err.message,
       };
     }
   }
@@ -50,7 +51,7 @@ export class UploadService {
       return {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,
-        message: err,
+        message: err.message,
       };
     }
   }
@@ -88,7 +89,7 @@ export class UploadService {
       return {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,
-        message: err,
+        message: err.message,
       };
     }
   }
@@ -116,7 +117,37 @@ export class UploadService {
       return {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,
-        message: err,
+        message: err.message,
+      };
+    }
+  }
+
+  async updateReel(dto: UpdateReelDto) {
+    try {
+      await this.prismaService.reel.update({
+        where: {
+          id: dto.reelId,
+        },
+        data: {
+          title: dto.title,
+          description: dto.description,
+          video: dto.newVideoUrl,
+        },
+      });
+
+      // delete video on cloudinary
+      await this.deleteFile(dto.idVideoOld);
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Update Reel successfully',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
       };
     }
   }

@@ -1,19 +1,23 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateReelDto {
-  @IsString()
+export class UpdateReelDto {
   @IsNotEmpty()
-  video: string;
+  @IsString()
+  reelId: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  idVideoOld: string;
+
+  @IsNotEmpty()
+  @IsString()
+  newVideoUrl: string;
+
+  @IsNotEmpty()
+  @IsString()
   title: string;
 
-  @IsString()
   @IsNotEmpty()
-  shopId: string;
-
   @IsString()
-  @IsNotEmpty()
   description: string;
 }

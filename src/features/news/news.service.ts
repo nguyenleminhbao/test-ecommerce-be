@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateReelDto } from './dto/create-reel.dto';
-import { STATUS } from '@prisma/client';
+import { STATUS, TYPE_COMMENT } from '@prisma/client';
 
 @Injectable()
 export class NewsService {
@@ -149,6 +149,9 @@ export class NewsService {
         where: {
           etag: reelId,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
         include: {
           user: {
             select: {
@@ -165,6 +168,35 @@ export class NewsService {
           ...reel,
           comments,
         },
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
+  async deleteReel(reelId: string) {
+    try {
+      const deleteComments = await this.prismaService.comment.deleteMany({
+        where: {
+          etag: reelId,
+          typeComment: TYPE_COMMENT.REEL,
+        },
+      });
+
+      const deleteReel = await this.prismaService.reel.delete({
+        where: {
+          id: reelId,
+        },
+      });
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Delete reel successfully',
       };
     } catch (err) {
       return {
