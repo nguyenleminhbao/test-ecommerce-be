@@ -49,4 +49,15 @@ export class ZaloPayController {
       throw err;
     }
   }
+
+  @Get('get-banks')
+  @Public()
+  async getBanks() {
+    try {
+      const response = await this.zaloPayService.getBanks();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

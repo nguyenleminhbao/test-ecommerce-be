@@ -1,4 +1,3 @@
-import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   MessageBody,
@@ -8,7 +7,6 @@ import {
 } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
-import { IUser } from 'src/common/interfaces/user.interface';
 
 @WebSocketGateway({
   cors: {

@@ -14,7 +14,6 @@ import { SocketGateWay } from '../socket/socket.gateway';
 @Injectable()
 export class ZaloPayService {
   constructor(
-    private readonly prismaService: PrismaService,
     private readonly orderService: OrderService,
     private readonly socketService: SocketGateWay,
   ) {}
@@ -203,7 +202,35 @@ export class ZaloPayService {
       return {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,
-        message: err,
+        message: err.message,
+      };
+    }
+  }
+
+  async getBanks() {
+    try {
+      let reqtime = Date.now();
+      const params = {
+        appid: process.env.ZALO_APP_ID,
+        reqtime: reqtime, // miliseconds
+        mac: CryptoJS.HmacSHA256(
+          process.env.ZALO_APP_ID + '|' + reqtime,
+          process.env.ZALO_KEY1,
+        ).toString(),
+      };
+      console.log(params);
+      const res = await axios.get(
+        'https://sbgateway.zalopay.vn/api/getlistmerchantbanks',
+        {
+          params,
+        },
+      );
+      return res;
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
       };
     }
   }
