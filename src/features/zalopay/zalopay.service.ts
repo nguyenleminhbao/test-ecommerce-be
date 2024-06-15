@@ -18,11 +18,101 @@ export class ZaloPayService {
     private readonly socketService: SocketGateWay,
   ) {}
 
-  async createBeforeOrder(user: IUser, dto: BeforeOrderDto) {
+  async createBeforeOrderQR(user: IUser, dto: BeforeOrderDto) {
     try {
       const embed_data = {
         preferred_payment_method: ['zalopay_wallet'],
         redirecturl: '',
+        user: user,
+        before_order_dto: dto,
+      };
+
+      //const items = dto.cartItems;
+      const checkOrder = await this.orderService.checkoutOrder(
+        user.id,
+        dto.shopCart,
+        dto.amount,
+      );
+      if (!checkOrder)
+        return {
+          type: 'Error',
+          code: HttpStatus.BAD_REQUEST,
+          message: 'Amount not match',
+        };
+      const transID = Math.floor(Math.random() * 1000000);
+      const order = {
+        app_id: process.env.ZALO_APP_ID,
+        app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
+        app_user: `${dto.firstName} ${dto.lastName}` ?? user?.name,
+        app_time: Date.now(), // miliseconds
+        item: JSON.stringify(
+          checkOrder.newShopCart.map((ele) => ele.cartItems).flat(),
+        ),
+        embed_data: JSON.stringify(embed_data),
+        amount: dto.amount,
+        description: `Ecommerce - Payment for the order #${transID}`,
+        bank_code: 'zalopayapp',
+        callback_url: `${process.env.BACKEND_HOST}/zalopay/callback-payment`,
+        mac: '',
+        phone: dto.phoneNumber,
+        address: dto.address,
+        email: user.email,
+      };
+      const data =
+        order.app_id +
+        '|' +
+        order.app_trans_id +
+        '|' +
+        order.app_user +
+        '|' +
+        order.amount +
+        '|' +
+        order.app_time +
+        '|' +
+        order.embed_data +
+        '|' +
+        order.item;
+      order.mac = CryptoJS.HmacSHA256(data, process.env.ZALO_KEY1).toString();
+      const res = await axios.post(
+        `${process.env.ZALO_END_POINT}/create`,
+        null,
+        {
+          params: order,
+        },
+      );
+
+      if (res?.data?.return_code == 1) {
+        return {
+          type: 'Success',
+          code: HttpStatus.OK,
+          message: {
+            amount: dto.amount,
+            description: res?.data.description,
+            codeTransition: order.app_trans_id,
+            orderUrl: res?.data.order_url,
+            qrCode: res?.data.qr_code,
+          },
+        };
+      }
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_REQUEST,
+        message: 'Create payment zalopay failed',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async createBeforeOrderATM(user: IUser, dto: BeforeOrderDto) {
+    try {
+      const embed_data = {
+        preferred_payment_method: [],
+        redirecturl: 'https://test-ecommerce-fe.vercel.app/cart',
         user: user,
         before_order_dto: dto,
       };
@@ -50,7 +140,7 @@ export class ZaloPayService {
         embed_data: JSON.stringify(embed_data),
         amount: dto.amount,
         description: `Ecommerce - Payment for the order #${transID}`,
-        bank_code: 'zalopayapp',
+        bank_code: dto.bankCode,
         callback_url: `${process.env.BACKEND_HOST}/zalopay/callback-payment`,
         mac: '',
         phone: dto.phoneNumber,
@@ -219,14 +309,32 @@ export class ZaloPayService {
         ).toString(),
       };
       console.log(params);
-      const res = await axios.get(
+      const { data } = await axios.get(
         'https://sbgateway.zalopay.vn/api/getlistmerchantbanks',
         {
           params,
         },
       );
-      return res;
+
+      axios
+        .get('https://sbgateway.zalopay.vn/api/getlistmerchantbanks', {
+          params,
+        })
+        .then((res) => {
+          let banks = res.data.banks;
+          for (let id in banks) {
+            let banklist = banks[id];
+            console.log(id + '.');
+            for (let bank of banklist) {
+              console.log(bank);
+            }
+          }
+        })
+        .catch((err) => console.error(err));
+
+      return data;
     } catch (err) {
+      console.log(err);
       return {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,

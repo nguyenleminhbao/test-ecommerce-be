@@ -11,13 +11,29 @@ import { BeforeOrderDto } from './dto/before-order.dto';
 export class ZaloPayController {
   constructor(private readonly zaloPayService: ZaloPayService) {}
 
-  @Post('create')
-  async createBeforeOrder(
+  @Post('create-qr')
+  async createBeforeOrderQR(
     @User() user: IUser,
     @Body() beforeOrderDto: BeforeOrderDto,
   ) {
     try {
-      const response = await this.zaloPayService.createBeforeOrder(
+      const response = await this.zaloPayService.createBeforeOrderQR(
+        user,
+        beforeOrderDto,
+      );
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('create-atm')
+  async createBeforeOrderATM(
+    @User() user: IUser,
+    @Body() beforeOrderDto: BeforeOrderDto,
+  ) {
+    try {
+      const response = await this.zaloPayService.createBeforeOrderATM(
         user,
         beforeOrderDto,
       );
