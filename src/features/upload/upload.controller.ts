@@ -13,6 +13,7 @@ import { Public } from 'src/core/decorators/public.decorator';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
 import { UpdateReelDto } from './dto/update-reel.dto';
+import { UpdateFeedDto } from './dto/update-feed.dto';
 
 @Controller('upload')
 export class UploadController {
@@ -57,6 +58,16 @@ export class UploadController {
   async updateReel(@Body() updateReelDto: UpdateReelDto) {
     try {
       const response = await this.uploadService.updateReel(updateReelDto);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('update-feed')
+  async updateFeed(@Body() updateFeedDto: UpdateFeedDto) {
+    try {
+      const response = await this.uploadService.updateFeed(updateFeedDto);
       return response;
     } catch (err) {
       throw err;

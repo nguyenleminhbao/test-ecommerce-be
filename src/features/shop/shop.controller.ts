@@ -31,6 +31,23 @@ export class ShopController {
     }
   }
 
+  @UseGuards(RoleGuard)
+  @Post('update-banner-marketplace')
+  async updateBannerMarketPlace(
+    @User('userId') userId: string,
+    @Body() { banners }: { banners: string[] },
+  ) {
+    try {
+      const response = await this.shopService.updateBannerMarketPlace(
+        userId,
+        banners,
+      );
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   @Public()
   @Get('get-shop-name')
   async getAllShopName() {

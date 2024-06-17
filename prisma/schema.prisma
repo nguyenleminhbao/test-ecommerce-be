@@ -28,6 +28,7 @@ model User {
   orders          Order[]
   paymentAccounts PaymentAccount[]
   shop            Shop?
+
 }
 
 model PaymentAccount {
@@ -90,6 +91,7 @@ model Shop {
   shopAvatar          String?
   shopBanners         String[] @default(["", "", ""])
   reels               Reel[]
+  feeds               Feed[]
   user                User     @relation(fields: [userId], references: [id])
 }
 
@@ -104,6 +106,19 @@ model Reel {
   status      STATUS   @default(ACTIVE)
   description String?  @default("Description")
   shop        Shop     @relation(fields: [shopId], references: [id])
+}
+
+model Feed {
+  id        String   @id @default(uuid())
+  title     String
+  thumbnail String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  shopId    String
+  status    STATUS   @default(ACTIVE)
+  content   String
+    view        Float    @default(0)
+  shop      Shop     @relation(fields: [shopId], references: [id])
 }
 
 model ShopRaw {
@@ -162,6 +177,12 @@ model Comment {
   typeComment   TYPE_COMMENT @default(PRODUCT)
   etag          String
   user          User         @relation(fields: [userId], references: [id])
+}
+
+model MartPlaceShop {
+  id            String       @id @default(uuid())
+  banners       String[]
+  userId        String   @unique
 }
 
 enum TYPE_COMMENT {

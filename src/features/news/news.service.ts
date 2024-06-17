@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateReelDto } from './dto/create-reel.dto';
 import { STATUS, TYPE_COMMENT } from '@prisma/client';
+import { CreateFeedDto } from './dto/create-feed.dto';
 
 @Injectable()
 export class NewsService {
@@ -35,6 +36,34 @@ export class NewsService {
     }
   }
 
+  async createFeed(dto: CreateFeedDto) {
+    try {
+      const newFeed = await this.prismaService.feed.create({
+        data: dto,
+      });
+
+      if (newFeed) {
+        return {
+          type: 'Success',
+          code: HttpStatus.OK,
+          message: 'Create feed successfully',
+        };
+      }
+
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_REQUEST,
+        message: 'Create feed failed',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
   async getAllReel() {
     try {
       const reels = await this.prismaService.reel.findMany({
@@ -57,6 +86,38 @@ export class NewsService {
         type: 'Error',
         code: HttpStatus.BAD_REQUEST,
         message: 'Get all reel failed',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
+  async getAllFeed() {
+    try {
+      const feeds = await this.prismaService.feed.findMany({
+        orderBy: {
+          createdAt: 'asc',
+        },
+        where: {
+          status: STATUS.ACTIVE,
+        },
+      });
+      if (feeds) {
+        return {
+          type: 'Success',
+          code: HttpStatus.OK,
+          message: feeds,
+        };
+      }
+
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_REQUEST,
+        message: 'Get all feed failed',
       };
     } catch (err) {
       return {
@@ -100,6 +161,39 @@ export class NewsService {
     }
   }
 
+  async getFeedByShop(shopId: string) {
+    try {
+      const feeds = await this.prismaService.feed.findMany({
+        where: {
+          shopId,
+          status: STATUS.ACTIVE,
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+      if (feeds) {
+        return {
+          type: 'Success',
+          code: HttpStatus.OK,
+          message: feeds,
+        };
+      }
+
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_REQUEST,
+        message: 'Get feed failed',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
   async increateViewReel(reelId: string) {
     try {
       await this.prismaService.reel.update({
@@ -117,6 +211,33 @@ export class NewsService {
         type: 'Success',
         code: HttpStatus.OK,
         message: 'Increase reel view',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
+  async increateViewFeed(feedId: string) {
+    try {
+      await this.prismaService.feed.update({
+        where: {
+          id: feedId,
+        },
+        data: {
+          view: {
+            increment: 1,
+          },
+        },
+      });
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Increase feed view',
       };
     } catch (err) {
       return {
@@ -178,6 +299,57 @@ export class NewsService {
     }
   }
 
+  async getFeedById(feedId: string) {
+    try {
+      const feed = await this.prismaService.feed.findFirst({
+        where: {
+          id: feedId,
+          status: STATUS.ACTIVE,
+        },
+        include: {
+          shop: {
+            select: {
+              id: true,
+              shopName: true,
+              shopAvatar: true,
+            },
+          },
+        },
+      });
+
+      const comments = await this.prismaService.comment.findMany({
+        where: {
+          etag: feedId,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              avatar: true,
+            },
+          },
+        },
+      });
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: {
+          ...feed,
+          comments,
+        },
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
   async deleteReel(reelId: string) {
     try {
       const deleteComments = await this.prismaService.comment.deleteMany({
@@ -197,6 +369,35 @@ export class NewsService {
         type: 'Success',
         code: HttpStatus.OK,
         message: 'Delete reel successfully',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
+  async deleteFeed(feedId: string) {
+    try {
+      const deleteComments = await this.prismaService.comment.deleteMany({
+        where: {
+          etag: feedId,
+          typeComment: TYPE_COMMENT.FEED,
+        },
+      });
+
+      const deleteFeed = await this.prismaService.feed.delete({
+        where: {
+          id: feedId,
+        },
+      });
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Delete feed successfully',
       };
     } catch (err) {
       return {

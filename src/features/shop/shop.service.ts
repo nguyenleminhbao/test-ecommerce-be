@@ -2,7 +2,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ROLE, STATUS } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateRawShopDto } from './dto/create-raw-shop.dto';
-import { CreateShopDto } from './dto/create-shop.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { IShop } from 'src/common/interfaces/shop.interface';
 import { getKeyShop } from 'src/utils/get-key-shop';
@@ -358,6 +357,30 @@ export class ShopService {
         type: 'Success',
         code: HttpStatus.OK,
         message: getRandomArray(banners),
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async updateBannerMarketPlace(userId: string, banners: string[]) {
+    try {
+      await this.prismaService.martPlaceShop.update({
+        where: {
+          userId,
+        },
+        data: {
+          banners,
+        },
+      });
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Marketplace update banner',
       };
     } catch (err) {
       return {
