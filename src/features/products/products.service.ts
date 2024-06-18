@@ -6,6 +6,7 @@ import { SHOPIFY_OBJECT } from 'src/common/enum/shopify-object.enum';
 import { RedisService } from 'src/redis/redis.service';
 import { filterDataProduct } from 'src/utils/filter-product-data';
 import { IShop } from 'src/common/interfaces/shop.interface';
+import { PER_PAGE } from 'src/common/constant/panigation';
 
 @Injectable()
 export class ProductsService {
@@ -77,12 +78,19 @@ export class ProductsService {
     return filterDataProduct(listProduct.flat() as IProduct[]);
   }
 
-  async getAllProducts() {
+  async getAllProducts(page?: number) {
     try {
+      if (!page)
+        return {
+          type: 'Success',
+          code: HttpStatus.OK,
+          message: this.products,
+        };
+
       return {
         type: 'Success',
         code: HttpStatus.OK,
-        message: this.products,
+        message: this.products.slice((page - 1) * PER_PAGE, page * PER_PAGE),
       };
     } catch (err) {
       return {

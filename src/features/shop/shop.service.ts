@@ -367,11 +367,11 @@ export class ShopService {
     }
   }
 
-  async updateBannerMarketPlace(userId: string, banners: string[]) {
+  async updateBannerMarketPlace(banners: string[]) {
     try {
       await this.prismaService.martPlaceShop.update({
         where: {
-          userId,
+          id: 'AMIN_MARKETPLACE',
         },
         data: {
           banners,
@@ -381,6 +381,63 @@ export class ShopService {
         type: 'Success',
         code: HttpStatus.OK,
         message: 'Marketplace update banner',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async getBanners() {
+    try {
+      const shops = await this.prismaService.shop.findMany({
+        where: {
+          status: STATUS.ACTIVE,
+        },
+        select: {
+          shopName: true,
+          shopBanners: true,
+        },
+      });
+
+      const banners = shops
+        .map((shop) => {
+          return shop.shopBanners.map((banner) => {
+            return {
+              shopName: shop.shopName,
+              banner: banner,
+            };
+          });
+        })
+        .flat();
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: banners,
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async getBannerPromotion() {
+    try {
+      const banners = await this.prismaService.martPlaceShop.findFirst({
+        where: {
+          id: 'AMIN_MARKETPLACE',
+        },
+      });
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: banners.banners,
       };
     } catch (err) {
       return {

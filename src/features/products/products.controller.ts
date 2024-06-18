@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Public } from 'src/core/decorators/public.decorator';
 
@@ -8,9 +16,9 @@ export class ProductsController {
 
   @Get()
   @Public()
-  async getAllProducts() {
+  async getAllProducts(@Query('page') page: string) {
     try {
-      const response = await this.productsService.getAllProducts();
+      const response = await this.productsService.getAllProducts(+page);
       return response;
     } catch (err) {
       throw err;

@@ -33,15 +33,9 @@ export class ShopController {
 
   @UseGuards(RoleGuard)
   @Post('update-banner-marketplace')
-  async updateBannerMarketPlace(
-    @User('userId') userId: string,
-    @Body() { banners }: { banners: string[] },
-  ) {
+  async updateBannerMarketPlace(@Body() { banners }: { banners: string[] }) {
     try {
-      const response = await this.shopService.updateBannerMarketPlace(
-        userId,
-        banners,
-      );
+      const response = await this.shopService.updateBannerMarketPlace(banners);
       return response;
     } catch (err) {
       throw err;
@@ -126,6 +120,28 @@ export class ShopController {
   async randomBanner() {
     try {
       const response = await this.shopService.randomBanner();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @UseGuards(RoleGuard)
+  @Get('get-banners')
+  async getBanners() {
+    try {
+      const response = await this.shopService.getBanners();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
+  @Get('get-banner-promotion')
+  async getBannerPromotion() {
+    try {
+      const response = await this.shopService.getBannerPromotion();
       return response;
     } catch (err) {
       throw err;
