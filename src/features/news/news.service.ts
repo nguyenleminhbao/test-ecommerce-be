@@ -3,10 +3,15 @@ import { PrismaService } from 'src/database/prisma.service';
 import { CreateReelDto } from './dto/create-reel.dto';
 import { STATUS, TYPE_COMMENT } from '@prisma/client';
 import { CreateFeedDto } from './dto/create-feed.dto';
+import { UploadService } from '../upload/upload.service';
+import { getPublicIdFromUrl } from 'src/utils/get-publicId-from-url';
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   async createReel(dto: CreateReelDto) {
     try {
@@ -68,7 +73,7 @@ export class NewsService {
     try {
       const reels = await this.prismaService.reel.findMany({
         orderBy: {
-          createdAt: 'asc',
+          createdAt: 'desc',
         },
         where: {
           status: STATUS.ACTIVE,
@@ -359,6 +364,16 @@ export class NewsService {
         },
       });
 
+      const reel = await this.prismaService.reel.findFirst({
+        where: {
+          id: reelId,
+        },
+      });
+
+      await this.uploadService.deleteFirebaseFile(
+        getPublicIdFromUrl(reel.video),
+      );
+
       const deleteReel = await this.prismaService.reel.delete({
         where: {
           id: reelId,
@@ -387,6 +402,16 @@ export class NewsService {
           typeComment: TYPE_COMMENT.FEED,
         },
       });
+
+      const feed = await this.prismaService.feed.findFirst({
+        where: {
+          id: feedId,
+        },
+      });
+
+      await this.uploadService.deleteFirebaseFile(
+        getPublicIdFromUrl(feed.thumbnail),
+      );
 
       const deleteFeed = await this.prismaService.feed.delete({
         where: {

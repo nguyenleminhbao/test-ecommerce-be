@@ -8,15 +8,9 @@ import { UpdateBannerDto } from './dto/update-banner.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
 import { UpdateReelDto } from './dto/update-reel.dto';
-<<<<<<< HEAD
 import { UpdateFeedDto } from './dto/update-feed.dto';
-=======
 import * as admin from 'firebase-admin';
-<<<<<<< HEAD
-import { error } from 'console';
->>>>>>> d9da921 (feat: upload firebase storage)
-=======
->>>>>>> 0791c33 (feat: upload firebase storage)
+import * as tokenFirebase from './firebase.json';
 
 export type CloudinaryResponse = UploadApiResponse | UploadApiErrorResponse;
 
@@ -24,9 +18,9 @@ export type CloudinaryResponse = UploadApiResponse | UploadApiErrorResponse;
 export class UploadService {
   private storage: admin.storage.Storage;
   constructor(private readonly prismaService: PrismaService) {
-    const tokenFirebase = require('./firebase.json');
+    //const tokenFirebase = require('./firebase.json');
     admin.initializeApp({
-      credential: admin.credential.cert(tokenFirebase),
+      credential: admin.credential.cert(tokenFirebase as any),
       storageBucket: 'e-commerce-dd627.appspot.com',
     });
     this.storage = admin.storage();
@@ -69,7 +63,9 @@ export class UploadService {
       // public image
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
 
-      return publicUrl;
+      return {
+        url: publicUrl,
+      };
     } catch (err) {
       return {
         type: 'Error',
@@ -121,8 +117,8 @@ export class UploadService {
           shopBanners: newShopBanners,
         },
       });
-      // delete image on cloudinary
-      await this.deleteFile(dto.idImageOld);
+      // delete image on firebase
+      await this.deleteFirebaseFile(dto.idImageOld);
 
       return {
         type: 'Success',
@@ -150,7 +146,7 @@ export class UploadService {
         },
       });
       // delete image on cloudinary
-      await this.deleteFile(dto.idImageOld);
+      await this.deleteFirebaseFile(dto.idImageOld);
 
       return {
         type: 'Success',
@@ -179,8 +175,8 @@ export class UploadService {
         },
       });
 
-      // delete video on cloudinary
-      await this.deleteFile(dto.idVideoOld);
+      // delete video on firebase
+      await this.deleteFirebaseFile(dto.idVideoOld);
 
       return {
         type: 'Success',
@@ -209,8 +205,8 @@ export class UploadService {
         },
       });
 
-      // delete video on cloudinary
-      await this.deleteFile(dto.idImageOld);
+      // delete video on firebase
+      await this.deleteFirebaseFile(dto.idImageOld);
 
       return {
         type: 'Success',
@@ -232,6 +228,6 @@ export class UploadService {
   async deleteFirebaseFile(public_id: string) {
     const bucket = this.storage.bucket();
     const file = bucket.file(public_id);
-    await file.delete();
+    if (file) await file.delete();
   }
 }

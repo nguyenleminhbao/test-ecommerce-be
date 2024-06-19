@@ -83,6 +83,17 @@ export class UploadController {
     }
   }
 
+  @Post('delete-file-v2')
+  async deleteFirebaseFile(@Body('publicId') publicId: string) {
+    try {
+      console.log(publicId);
+      const response = await this.uploadService.deleteFirebaseFile(publicId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   @Public()
   @Delete('delete-file/:publicId')
   async deleteFile(@Param('publicId') publicId: string) {
