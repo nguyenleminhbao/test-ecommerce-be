@@ -38,5 +38,5 @@ export class BeforeOrderDto {
 
   @IsString()
   @IsOptional()
-  bankCode: string;
+  bankCode: string; // zalopayapp (QR) , "" (app zalo pay)
 }

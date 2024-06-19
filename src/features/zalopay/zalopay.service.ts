@@ -1,5 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
 import axios from 'axios';
 import { CallbackDto } from './dto/callback.dto';
 import * as CryptoJS from 'crypto-js';
@@ -22,12 +21,11 @@ export class ZaloPayService {
     try {
       const embed_data = {
         preferred_payment_method: ['zalopay_wallet'],
-        redirecturl: '',
+        redirecturl: 'https://test-ecommerce-fe.vercel.app/cart',
         user: user,
         before_order_dto: dto,
       };
 
-      //const items = dto.cartItems;
       const checkOrder = await this.orderService.checkoutOrder(
         user.id,
         dto.shopCart,
@@ -51,7 +49,7 @@ export class ZaloPayService {
         embed_data: JSON.stringify(embed_data),
         amount: dto.amount,
         description: `Ecommerce - Payment for the order #${transID}`,
-        bank_code: 'zalopayapp',
+        bank_code: dto.bankCode ?? '',
         callback_url: `${process.env.BACKEND_HOST}/zalopay/callback-payment`,
         mac: '',
         phone: dto.phoneNumber,
