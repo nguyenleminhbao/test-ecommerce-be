@@ -8,13 +8,26 @@ import { UpdateBannerDto } from './dto/update-banner.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
 import { UpdateReelDto } from './dto/update-reel.dto';
+<<<<<<< HEAD
 import { UpdateFeedDto } from './dto/update-feed.dto';
+=======
+import * as admin from 'firebase-admin';
+import { error } from 'console';
+>>>>>>> d9da921 (feat: upload firebase storage)
 
 export type CloudinaryResponse = UploadApiResponse | UploadApiErrorResponse;
 
 @Injectable()
 export class UploadService {
-  constructor(private readonly prismaService: PrismaService) {}
+  private storage: admin.storage.Storage;
+  constructor(private readonly prismaService: PrismaService) {
+    const tokenFirebase = require('./firebase.json');
+    admin.initializeApp({
+      credential: admin.credential.cert(tokenFirebase),
+      storageBucket: 'e-commerce-dd627.appspot.com',
+    });
+    this.storage = admin.storage();
+  }
 
   async uploadFile(file: Express.Multer.File) {
     try {
@@ -27,6 +40,33 @@ export class UploadService {
         },
       );
       return image;
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async uploadFirebaseFile(file: Express.Multer.File) {
+    try {
+      const bucket = this.storage.bucket();
+      const fileName = `${Date.now()}_${file.originalname}`;
+      const destination = `e-commerce/${fileName}`;
+
+      const fileUpload = bucket.file(destination);
+      await fileUpload.save(file.buffer, {
+        metadata: {
+          contentType: file.mimetype,
+        },
+        public: true,
+      });
+
+      // public image
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+
+      return publicUrl;
     } catch (err) {
       return {
         type: 'Error',
@@ -184,5 +224,11 @@ export class UploadService {
   }
   async deleteFile(public_id: string) {
     await cloudinary.uploader.destroy(public_id);
+  }
+
+  async deleteFirebaseFile(public_id: string) {
+    const bucket = this.storage.bucket();
+    const file = bucket.file(public_id);
+    await file.delete();
   }
 }

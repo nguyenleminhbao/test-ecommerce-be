@@ -23,14 +23,23 @@ export class UploadController {
   @Post('image')
   @UseInterceptors(FileInterceptor('file'))
   uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadFile(file);
+    return this.uploadService.uploadFirebaseFile(file);
+    //return this.uploadService.uploadFile(file);
+  }
+
+  @Public()
+  @Post('firebase/image')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFirebaseImage(@UploadedFile() file: Express.Multer.File) {
+    return this.uploadService.uploadFirebaseFile(file);
   }
 
   @Public()
   @Post('video')
   @UseInterceptors(FileInterceptor('file'))
   uploadVideo(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadVideo(file);
+    return this.uploadService.uploadFirebaseFile(file);
+    //return this.uploadService.uploadVideo(file);
   }
 
   @Post('update-banner')
