@@ -13,6 +13,7 @@ import { UploadModule } from './upload/upload.module';
 import { LivestreamModule } from './livetream/livestream.module';
 import { CommentModule } from './comment/comment.module';
 import { NewsModule } from './news/news.module';
+import { SearchModule } from './elasticsearch/elasticsearch.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { NewsModule } from './news/news.module';
     LivestreamModule,
     CommentModule,
     NewsModule,
+    SearchModule,
   ],
 })
 export class FeatureModule {}
