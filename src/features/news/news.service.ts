@@ -5,12 +5,15 @@ import { STATUS, TYPE_COMMENT } from '@prisma/client';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { UploadService } from '../upload/upload.service';
 import { getPublicIdFromUrl } from 'src/utils/get-publicId-from-url';
+import { SearchService } from '../elasticsearch/elasticsearch.service';
+import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
 
 @Injectable()
 export class NewsService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly uploadService: UploadService,
+    private readonly searchService: SearchService,
   ) {}
 
   async createReel(dto: CreateReelDto) {
@@ -18,6 +21,12 @@ export class NewsService {
       const newReel = await this.prismaService.reel.create({
         data: dto,
       });
+
+      await this.searchService.createDocument(
+        ElasticsearchIndex.REEL,
+        newReel.id,
+        newReel,
+      );
 
       if (newReel) {
         return {
@@ -46,6 +55,12 @@ export class NewsService {
       const newFeed = await this.prismaService.feed.create({
         data: dto,
       });
+
+      await this.searchService.createDocument(
+        ElasticsearchIndex.FEED,
+        newFeed.id,
+        newFeed,
+      );
 
       if (newFeed) {
         return {
@@ -374,6 +389,8 @@ export class NewsService {
         getPublicIdFromUrl(reel.video),
       );
 
+      await this.searchService.deleteDocument(ElasticsearchIndex.REEL, reel.id);
+
       const deleteReel = await this.prismaService.reel.delete({
         where: {
           id: reelId,
@@ -413,6 +430,8 @@ export class NewsService {
         getPublicIdFromUrl(feed.thumbnail),
       );
 
+      await this.searchService.deleteDocument(ElasticsearchIndex.FEED, feed.id);
+
       const deleteFeed = await this.prismaService.feed.delete({
         where: {
           id: feedId,
@@ -423,6 +442,76 @@ export class NewsService {
         type: 'Success',
         code: HttpStatus.OK,
         message: 'Delete feed successfully',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
+  async updateReelIndex() {
+    try {
+      const reels = await this.prismaService.reel.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        where: {
+          status: STATUS.ACTIVE,
+        },
+      });
+
+      const results = await Promise.all(
+        reels.map(async (ele) => {
+          await this.searchService.createDocument(
+            ElasticsearchIndex.REEL,
+            ele.id,
+            ele,
+          );
+        }),
+      );
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: results,
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err?.message,
+      };
+    }
+  }
+
+  async updateFeedIndex() {
+    try {
+      const feeds = await this.prismaService.feed.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        where: {
+          status: STATUS.ACTIVE,
+        },
+      });
+
+      const results = await Promise.all(
+        feeds.map(async (ele) => {
+          await this.searchService.createDocument(
+            ElasticsearchIndex.FEED,
+            ele.id,
+            ele,
+          );
+        }),
+      );
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: results,
       };
     } catch (err) {
       return {
