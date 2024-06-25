@@ -93,15 +93,4 @@ export class UploadController {
       throw err;
     }
   }
-
-  @Public()
-  @Delete('delete-file/:publicId')
-  async deleteFile(@Param('publicId') publicId: string) {
-    try {
-      const response = await this.uploadService.deleteFile(publicId);
-      return response;
-    } catch (err) {
-      throw err;
-    }
-  }
 }
