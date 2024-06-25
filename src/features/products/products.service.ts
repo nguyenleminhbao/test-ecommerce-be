@@ -7,6 +7,9 @@ import { RedisService } from 'src/redis/redis.service';
 import { filterDataProduct } from 'src/utils/filter-product-data';
 import { IShop } from 'src/common/interfaces/shop.interface';
 import { PER_PAGE } from 'src/common/constant/panigation';
+import { SearchService } from '../elasticsearch/elasticsearch.service';
+import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
+import { title } from 'process';
 
 @Injectable()
 export class ProductsService {
@@ -15,6 +18,7 @@ export class ProductsService {
   constructor(
     private readonly shopifyService: ShopifyService,
     private readonly redisService: RedisService,
+    private readonly searchService: SearchService,
   ) {
     // check database cache products exist
 
@@ -75,7 +79,21 @@ export class ProductsService {
       2 * 24 * 60 * 60,
     );
 
-    return filterDataProduct(listProduct.flat() as IProduct[]);
+    const result = listProduct.flat() as IProduct[];
+
+    // check index product exist in kibana server
+    await this.searchService.deleteIndex('products');
+    // update data for kibana server
+    Promise.all(
+      result.map(async (ele) => {
+        await this.searchService.createDocument(
+          ElasticsearchIndex.PRODUCT,
+          ele.id,
+          ele,
+        );
+      }),
+    );
+    return filterDataProduct(result);
   }
 
   async getAllProducts(page?: number) {

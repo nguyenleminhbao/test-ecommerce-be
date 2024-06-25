@@ -1,9 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import {
-  v2 as cloudinary,
-  UploadApiErrorResponse,
-  UploadApiResponse,
-} from 'cloudinary';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
@@ -11,8 +6,6 @@ import { UpdateReelDto } from './dto/update-reel.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
 import * as admin from 'firebase-admin';
 import * as tokenFirebase from './firebase.json';
-
-export type CloudinaryResponse = UploadApiResponse | UploadApiErrorResponse;
 
 @Injectable()
 export class UploadService {
@@ -24,26 +17,6 @@ export class UploadService {
       storageBucket: 'e-commerce-dd627.appspot.com',
     });
     this.storage = admin.storage();
-  }
-
-  async uploadFile(file: Express.Multer.File) {
-    try {
-      const imageBase64 = Buffer.from(file.buffer).toString('base64');
-      const image = await cloudinary.uploader.upload(
-        `data:image/jpeg;base64,${imageBase64}`,
-        {
-          folder: 'ecommerce',
-          use_filename: true,
-        },
-      );
-      return image;
-    } catch (err) {
-      return {
-        type: 'Error',
-        code: HttpStatus.BAD_GATEWAY,
-        message: err.message,
-      };
-    }
   }
 
   async uploadFirebaseFile(file: Express.Multer.File) {
@@ -66,27 +39,6 @@ export class UploadService {
       return {
         url: publicUrl,
       };
-    } catch (err) {
-      return {
-        type: 'Error',
-        code: HttpStatus.BAD_GATEWAY,
-        message: err.message,
-      };
-    }
-  }
-
-  async uploadVideo(file: Express.Multer.File) {
-    try {
-      const imageBase64 = Buffer.from(file.buffer).toString('base64');
-      const video = await cloudinary.uploader.upload(
-        `data:video/mp4;base64,${imageBase64}`,
-        {
-          folder: 'ecommerce',
-          use_filename: true,
-          resource_type: 'video',
-        },
-      );
-      return video;
     } catch (err) {
       return {
         type: 'Error',
@@ -145,7 +97,7 @@ export class UploadService {
           shopAvatar: dto.newImageUrl,
         },
       });
-      // delete image on cloudinary
+      // delete image on firebase
       await this.deleteFirebaseFile(dto.idImageOld);
 
       return {
@@ -220,9 +172,6 @@ export class UploadService {
         message: err.message,
       };
     }
-  }
-  async deleteFile(public_id: string) {
-    await cloudinary.uploader.destroy(public_id);
   }
 
   async deleteFirebaseFile(public_id: string) {

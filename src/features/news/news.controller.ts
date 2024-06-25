@@ -51,6 +51,28 @@ export class NewsController {
   }
 
   @Public()
+  @Get('reel/elasticseach')
+  async updatReelIndex() {
+    try {
+      const response = await this.newsService.updateReelIndex();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
+  @Get('feed/elasticseach')
+  async updatFeedIndex() {
+    try {
+      const response = await this.newsService.updateFeedIndex();
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
   @Get('reel/:reelId')
   async getReelById(@Param('reelId') reelId: string) {
     try {
