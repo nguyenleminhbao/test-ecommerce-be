@@ -58,7 +58,6 @@ export class AuthService {
   async login(dto: LoginDto) {
     try {
       const payload = await this.checkLogin(dto);
-
       return {
         type: 'Success',
         code: HttpStatus.OK,
