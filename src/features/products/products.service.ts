@@ -9,7 +9,6 @@ import { IShop } from 'src/common/interfaces/shop.interface';
 import { PER_PAGE } from 'src/common/constant/panigation';
 import { SearchService } from '../elasticsearch/elasticsearch.service';
 import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
-import { title } from 'process';
 
 @Injectable()
 export class ProductsService {
