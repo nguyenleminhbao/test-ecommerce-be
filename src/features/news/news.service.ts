@@ -15,7 +15,7 @@ export class NewsService {
     private readonly uploadService: UploadService,
     private readonly searchService: SearchService,
   ) {
-    const updateDataElasticsearch = async () => {
+    async function updateDataElasticsearch() {
       if (await this.searchService.checkIndexExist(ElasticsearchIndex.REEL)) {
         await this.updateReelIndex();
       }
@@ -23,7 +23,7 @@ export class NewsService {
       if (await this.searchService.checkIndexExist(ElasticsearchIndex.FEED)) {
         await this.updateFeedIndex();
       }
-    };
+    }
 
     updateDataElasticsearch();
   }

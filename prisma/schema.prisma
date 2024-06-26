@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -28,7 +29,6 @@ model User {
   orders          Order[]
   paymentAccounts PaymentAccount[]
   shop            Shop?
-
 }
 
 model PaymentAccount {
@@ -117,7 +117,7 @@ model Feed {
   shopId    String
   status    STATUS   @default(ACTIVE)
   content   String
-    view        Float    @default(0)
+  view      Float    @default(0)
   shop      Shop     @relation(fields: [shopId], references: [id])
 }
 
@@ -180,9 +180,9 @@ model Comment {
 }
 
 model MartPlaceShop {
-  id            String       @id @default(uuid())
-  banners       String[]
-  userId        String   @unique
+  id      String   @id @default(uuid())
+  banners String[]
+  userId  String   @unique
 }
 
 enum TYPE_COMMENT {
