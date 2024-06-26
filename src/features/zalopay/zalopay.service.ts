@@ -252,49 +252,6 @@ export class ZaloPayService {
     }
   }
 
-  async getStatusOrder(app_trans_id: string) {
-    try {
-      const postData = {
-        app_id: process.env.ZALO_APP_ID,
-        app_trans_id,
-        mac: '',
-      };
-      let data =
-        postData.app_id +
-        '|' +
-        postData.app_trans_id +
-        '|' +
-        process.env.ZALO_KEY1; // appid|app_trans_id|key1
-      postData.mac = CryptoJS.HmacSHA256(
-        data,
-        process.env.ZALO_KEY1,
-      ).toString();
-
-      const res = await axios.post(
-        `${process.env.ZALO_END_POINT}/query`,
-        qs.stringify(postData),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      );
-
-      return res?.data;
-      // return {
-      //   type: 'Success',
-      //   code: HttpStatus.OK,
-      //   message: res?.data,
-      // };
-    } catch (err) {
-      return {
-        type: 'Error',
-        code: HttpStatus.BAD_GATEWAY,
-        message: err.message,
-      };
-    }
-  }
-
   async getBanks() {
     try {
       let reqtime = Date.now();
@@ -306,29 +263,13 @@ export class ZaloPayService {
           process.env.ZALO_KEY1,
         ).toString(),
       };
-      console.log(params);
+
       const { data } = await axios.get(
         'https://sbgateway.zalopay.vn/api/getlistmerchantbanks',
         {
           params,
         },
       );
-
-      axios
-        .get('https://sbgateway.zalopay.vn/api/getlistmerchantbanks', {
-          params,
-        })
-        .then((res) => {
-          let banks = res.data.banks;
-          for (let id in banks) {
-            let banklist = banks[id];
-            console.log(id + '.');
-            for (let bank of banklist) {
-              console.log(bank);
-            }
-          }
-        })
-        .catch((err) => console.error(err));
 
       return data;
     } catch (err) {
