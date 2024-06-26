@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Public } from 'src/core/decorators/public.decorator';
 import { SearchService } from './elasticsearch.service';
 import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
-import { title } from 'process';
 
 @Controller('search')
 export class SearchController {

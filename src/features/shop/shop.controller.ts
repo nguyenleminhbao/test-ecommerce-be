@@ -9,8 +9,6 @@ import {
 } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateRawShopDto } from './dto/create-raw-shop.dto';
-import { Admin } from 'src/core/decorators/admin.decorator';
-import { IUser } from 'src/common/interfaces/user.interface';
 import { User } from 'src/core/decorators/user.decorator';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { Public } from 'src/core/decorators/public.decorator';
@@ -53,8 +51,9 @@ export class ShopController {
     }
   }
 
+  @UseGuards(RoleGuard)
   @Get('get-raw-shop')
-  async getRawShop(@Admin() admin: IUser) {
+  async getRawShop() {
     try {
       const response = await this.shopService.getRawShop();
       return response;
@@ -79,11 +78,9 @@ export class ShopController {
     }
   }
 
+  @UseGuards(RoleGuard)
   @Post('create-shop')
-  async createShop(
-    @Admin() admin: IUser,
-    @Body() createShopDto: CreateShopDto,
-  ) {
+  async createShop(@Body() createShopDto: CreateShopDto) {
     try {
       const response = await this.shopService.createShop(
         createShopDto.shopRawId,

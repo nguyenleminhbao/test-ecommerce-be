@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { User } from 'src/core/decorators/user.decorator';
 import { AddToCartDto } from './dto/add-to-cart.dto';
