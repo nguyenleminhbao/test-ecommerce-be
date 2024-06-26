@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 import { SHOPIFY_OBJECT } from 'src/common/enum/shopify-object.enum';
 import { IShop } from 'src/common/interfaces/shop.interface';
 import { RedisService } from 'src/redis/redis.service';
