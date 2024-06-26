@@ -51,7 +51,7 @@ export class NewsController {
   }
 
   @Public()
-  @Get('reel/elasticseach')
+  @Get('reel/elasticsearch')
   async updatReelIndex() {
     try {
       const response = await this.newsService.updateReelIndex();
@@ -62,7 +62,7 @@ export class NewsController {
   }
 
   @Public()
-  @Get('feed/elasticseach')
+  @Get('feed/elasticsearch')
   async updatFeedIndex() {
     try {
       const response = await this.newsService.updateFeedIndex();
