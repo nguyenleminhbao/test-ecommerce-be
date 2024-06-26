@@ -16,11 +16,18 @@ export class NewsService {
     private readonly searchService: SearchService,
   ) {
     const updateDataElasticsearch = async () => {
-      if (await this.searchService.checkIndexExist(ElasticsearchIndex.REEL)) {
+      const isReelIndex = await this.searchService.checkIndexExist(
+        ElasticsearchIndex.REEL,
+      );
+      const isFeedIndex = await this.searchService.checkIndexExist(
+        ElasticsearchIndex.FEED,
+      );
+
+      if (!isReelIndex) {
         await this.updateReelIndex();
       }
 
-      if (await this.searchService.checkIndexExist(ElasticsearchIndex.FEED)) {
+      if (!isFeedIndex) {
         await this.updateFeedIndex();
       }
     };
