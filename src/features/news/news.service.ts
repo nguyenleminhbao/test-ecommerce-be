@@ -14,26 +14,7 @@ export class NewsService {
     private readonly prismaService: PrismaService,
     private readonly uploadService: UploadService,
     private readonly searchService: SearchService,
-  ) {
-    const updateDataElasticsearch = async () => {
-      const isReelIndex = await this.searchService.checkIndexExist(
-        ElasticsearchIndex.REEL,
-      );
-      const isFeedIndex = await this.searchService.checkIndexExist(
-        ElasticsearchIndex.FEED,
-      );
-
-      if (!isReelIndex) {
-        await this.updateReelIndex();
-      }
-
-      if (!isFeedIndex) {
-        await this.updateFeedIndex();
-      }
-    };
-
-    updateDataElasticsearch();
-  }
+  ) {}
 
   async createReel(dto: CreateReelDto) {
     try {
