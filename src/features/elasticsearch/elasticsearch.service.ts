@@ -90,4 +90,8 @@ export class SearchService {
     const isIndexExist = await this.client.indices.exists({ index });
     if (isIndexExist) await this.client.indices.delete({ index });
   }
+
+  async checkIndexExist(index: string) {
+    return await this.client.indices.exists({ index });
+  }
 }
