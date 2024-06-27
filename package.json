@@ -12,7 +12,7 @@
     "db:push": "npx prisma db push",
     "db:pull": "npx prisma db pull",
     "studio": "npx prisma studio",
-    "start": "nest start",
+    "start": " nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "NODE_ENV=production node dist/main",
