@@ -12,7 +12,6 @@ import { LoginDto } from './dto/login.dto';
 import { Public } from 'src/core/decorators/public.decorator';
 import { User } from 'src/core/decorators/user.decorator';
 import { IUser } from 'src/common/interfaces/user.interface';
-import { RoleGuard } from 'src/core/guards/role.guard';
 import { ROLE } from '@prisma/client';
 
 @Controller('auth')
