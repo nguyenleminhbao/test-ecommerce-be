@@ -1,7 +1,6 @@
 import { connectRedis } from './../utils/connect-redis';
-import { HttpStatus, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RedisClientType } from '@redis/client';
-import { createClient } from 'redis';
 
 @Injectable()
 export class RedisService {

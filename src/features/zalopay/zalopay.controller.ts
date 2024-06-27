@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ZaloPayService } from './zalopay.service';
-import { GetStatusOrderDto } from './dto/get-status.dto';
 import { CallbackDto } from './dto/callback.dto';
 import { Public } from 'src/core/decorators/public.decorator';
 import { User } from 'src/core/decorators/user.decorator';
@@ -36,18 +35,6 @@ export class ZaloPayController {
       const response = await this.zaloPayService.createBeforeOrderATM(
         user,
         beforeOrderDto,
-      );
-      return response;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Post('get-status')
-  async getStatusOrder(@Body() getStatusOrderDto: GetStatusOrderDto) {
-    try {
-      const response = await this.zaloPayService.getStatusOrder(
-        getStatusOrderDto?.app_trans_id,
       );
       return response;
     } catch (err) {

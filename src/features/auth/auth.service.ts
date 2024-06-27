@@ -1,11 +1,10 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/database/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { createClerkClient } from '@clerk/clerk-sdk-node';
 import { RedisService } from 'src/redis/redis.service';
 import { TYPE_LOGIN } from '@prisma/client';
-import { IUser } from 'src/common/interfaces/user.interface';
 
 @Injectable()
 export class AuthService {
