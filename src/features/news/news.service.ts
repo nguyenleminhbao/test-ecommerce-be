@@ -3,7 +3,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { CreateReelDto } from './dto/create-reel.dto';
 import { STATUS, TYPE_COMMENT } from '@prisma/client';
 import { CreateFeedDto } from './dto/create-feed.dto';
-import { UploadService } from '../upload/upload.service';
+//import { UploadService } from '../upload/upload.service';
 import { getPublicIdFromUrl } from 'src/utils/get-publicId-from-url';
 import { SearchService } from '../elasticsearch/elasticsearch.service';
 import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
@@ -12,7 +12,7 @@ import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
 export class NewsService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly uploadService: UploadService,
+    //  private readonly uploadService: UploadService,
     private readonly searchService: SearchService,
   ) {
     const updateDataElasticsearch = async () => {
@@ -404,9 +404,9 @@ export class NewsService {
         },
       });
 
-      await this.uploadService.deleteFirebaseFile(
-        getPublicIdFromUrl(reel.video),
-      );
+      // await this.uploadService.deleteFirebaseFile(
+      //   getPublicIdFromUrl(reel.video),
+      // );
 
       await this.searchService.deleteDocument(ElasticsearchIndex.REEL, reel.id);
 
@@ -445,9 +445,9 @@ export class NewsService {
         },
       });
 
-      await this.uploadService.deleteFirebaseFile(
-        getPublicIdFromUrl(feed.thumbnail),
-      );
+      // await this.uploadService.deleteFirebaseFile(
+      //   getPublicIdFromUrl(feed.thumbnail),
+      // );
 
       await this.searchService.deleteDocument(ElasticsearchIndex.FEED, feed.id);
 

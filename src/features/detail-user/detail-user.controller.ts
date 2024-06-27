@@ -72,39 +72,6 @@ export class DetailUserController {
     }
   }
 
-  @Public()
-  @Post('/livestream/start-stream')
-  async startStreamCallback(@Body() body: StreamCallbackDto) {
-    try {
-      const response = await this.detailUserService.startStreamCallback(body);
-      return response;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Public()
-  @Post('/livestream/end-stream')
-  async endStreamCallback(@Body() body: StreamCallbackDto) {
-    try {
-      const response = await this.detailUserService.endStreamCallback(body);
-      return response;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Public()
-  @Get('/livestream')
-  async getAllStream() {
-    try {
-      const response = await this.detailUserService.getAllStream();
-      return response;
-    } catch (err) {
-      throw err;
-    }
-  }
-
   @Delete('account/:accountId')
   async deleteAccount(@Param('accountId') accountId: string) {
     try {
