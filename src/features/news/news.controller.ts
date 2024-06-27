@@ -3,6 +3,8 @@ import { NewsService } from './news.service';
 import { CreateReelDto } from './dto/create-reel.dto';
 import { Public } from 'src/core/decorators/public.decorator';
 import { CreateFeedDto } from './dto/create-feed.dto';
+import { UpdateReelDto } from './dto/update-reel.dto';
+import { UpdateFeedDto } from './dto/update-feed.dto';
 
 @Controller('news')
 export class NewsController {
@@ -110,6 +112,26 @@ export class NewsController {
   async getFeedByShop(@Param('shopId') shopId: string) {
     try {
       const response = await this.newsService.getFeedByShop(shopId);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('update-reel')
+  async updateReel(@Body() updateReelDto: UpdateReelDto) {
+    try {
+      const response = await this.newsService.updateReel(updateReelDto);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('update-feed')
+  async updateFeed(@Body() updateFeedDto: UpdateFeedDto) {
+    try {
+      const response = await this.newsService.updateFeed(updateFeedDto);
       return response;
     } catch (err) {
       throw err;

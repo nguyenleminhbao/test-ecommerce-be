@@ -13,6 +13,8 @@ import { User } from 'src/core/decorators/user.decorator';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { Public } from 'src/core/decorators/public.decorator';
 import { RoleGuard } from 'src/core/guards/role.guard';
+import { UpdateBannerDto } from './dto/update-banner.dto';
+import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
 
 @Controller('shop')
 export class ShopController {
@@ -34,6 +36,27 @@ export class ShopController {
   async updateBannerMarketPlace(@Body() { banners }: { banners: string[] }) {
     try {
       const response = await this.shopService.updateBannerMarketPlace(banners);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('update-banner')
+  async updateBanner(@Body() updateBannerDto: UpdateBannerDto) {
+    try {
+      const response = await this.shopService.updateBanner(updateBannerDto);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Post('update-shop-avatar')
+  async updateShopAvatar(@Body() updateShopAvatar: UpdateShopAvatarDto) {
+    try {
+      const response =
+        await this.shopService.updateShopAvatar(updateShopAvatar);
       return response;
     } catch (err) {
       throw err;

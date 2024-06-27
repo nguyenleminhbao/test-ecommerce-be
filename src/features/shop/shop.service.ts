@@ -6,6 +6,9 @@ import { RedisService } from 'src/redis/redis.service';
 import { IShop } from 'src/common/interfaces/shop.interface';
 import { getKeyShop } from 'src/utils/get-key-shop';
 import { getRandomArray } from 'src/utils/random-array';
+import { UpdateBannerDto } from './dto/update-banner.dto';
+import axios from 'axios';
+import { UpdateShopAvatarDto } from './dto/update-shop-avatar.dto';
 
 @Injectable()
 export class ShopService {
@@ -438,6 +441,83 @@ export class ShopService {
         type: 'Success',
         code: HttpStatus.OK,
         message: banners.banners,
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async updateBanner(dto: UpdateBannerDto) {
+    try {
+      const shop = await this.prismaService.shop.findFirst({
+        where: {
+          id: dto.shopId,
+        },
+      });
+
+      const newShopBanners = shop.shopBanners.map((banner, id) =>
+        id == dto.numOfBanner ? dto.newImageUrl : banner,
+      );
+
+      // update banner in database
+      await this.prismaService.shop.update({
+        where: {
+          id: dto.shopId,
+        },
+        data: {
+          shopBanners: newShopBanners,
+        },
+      });
+      // delete image on firebase
+      const publicId = dto.idImageOld;
+      const { data } = await axios.post(
+        `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
+        publicId,
+      );
+
+      console.log(data);
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Update Banner successfully',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async updateShopAvatar(dto: UpdateShopAvatarDto) {
+    try {
+      // update shop avatar  in database
+      await this.prismaService.shop.update({
+        where: {
+          id: dto.shopId,
+        },
+        data: {
+          shopAvatar: dto.newImageUrl,
+        },
+      });
+
+      // delete image on firebase
+      const publicId = dto.idImageOld;
+      const { data } = await axios.post(
+        `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
+        publicId,
+      );
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Update shop avatar successfully',
       };
     } catch (err) {
       return {

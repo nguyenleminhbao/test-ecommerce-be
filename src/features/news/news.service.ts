@@ -7,12 +7,14 @@ import { CreateFeedDto } from './dto/create-feed.dto';
 import { getPublicIdFromUrl } from 'src/utils/get-publicId-from-url';
 import { SearchService } from '../elasticsearch/elasticsearch.service';
 import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
+import { UpdateReelDto } from './dto/update-reel.dto';
+import axios from 'axios';
+import { UpdateFeedDto } from './dto/update-feed.dto';
 
 @Injectable()
 export class NewsService {
   constructor(
     private readonly prismaService: PrismaService,
-    //  private readonly uploadService: UploadService,
     private readonly searchService: SearchService,
   ) {
     const updateDataElasticsearch = async () => {
@@ -537,6 +539,74 @@ export class NewsService {
         type: 'Error',
         code: HttpStatus.BAD_GATEWAY,
         message: err?.message,
+      };
+    }
+  }
+
+  async updateReel(dto: UpdateReelDto) {
+    try {
+      await this.prismaService.reel.update({
+        where: {
+          id: dto.reelId,
+        },
+        data: {
+          title: dto.title,
+          description: dto.description,
+          video: dto.newVideoUrl,
+        },
+      });
+
+      // delete image on firebase
+      const publicId = dto.idVideoOld;
+      const { data } = await axios.post(
+        `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
+        publicId,
+      );
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Update Reel successfully',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
+      };
+    }
+  }
+
+  async updateFeed(dto: UpdateFeedDto) {
+    try {
+      await this.prismaService.feed.update({
+        where: {
+          id: dto.feedId,
+        },
+        data: {
+          title: dto.title,
+          content: dto.content,
+          thumbnail: dto.newImageUrl,
+        },
+      });
+
+      // delete video on firebase
+      const publicId = dto.idImageOld;
+      const { data } = await axios.post(
+        `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
+        publicId,
+      );
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: 'Update Feed successfully',
+      };
+    } catch (err) {
+      return {
+        type: 'Error',
+        code: HttpStatus.BAD_GATEWAY,
+        message: err.message,
       };
     }
   }
