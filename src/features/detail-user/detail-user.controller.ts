@@ -3,6 +3,8 @@ import { DetailUserService } from './detail-user.service';
 import { User } from 'src/core/decorators/user.decorator';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { Public } from 'src/core/decorators/public.decorator';
+import { StreamCallbackDto } from './dto/streamCallback.dto';
 
 @Controller('detail-user')
 export class DetailUserController {
@@ -64,6 +66,39 @@ export class DetailUserController {
         userId,
         createAccountDto,
       );
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
+  @Post('/livestream/start-stream')
+  async startStreamCallback(@Body() body: StreamCallbackDto) {
+    try {
+      const response = await this.detailUserService.startStreamCallback(body);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
+  @Post('/livestream/end-stream')
+  async endStreamCallback(@Body() body: StreamCallbackDto) {
+    try {
+      const response = await this.detailUserService.endStreamCallback(body);
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Public()
+  @Get('/livestream')
+  async getAllStream() {
+    try {
+      const response = await this.detailUserService.getAllStream();
       return response;
     } catch (err) {
       throw err;

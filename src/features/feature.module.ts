@@ -8,7 +8,6 @@ import { ZaloPayModule } from './zalopay/zalopay.module';
 import { OrderModule } from './order/order.module';
 import { SocketModule } from './socket/socket.module';
 import { UploadModule } from './upload/upload.module';
-import { LivestreamModule } from './livetream/livestream.module';
 import { CommentModule } from './comment/comment.module';
 import { NewsModule } from './news/news.module';
 import { SearchModule } from './elasticsearch/elasticsearch.module';
@@ -24,7 +23,6 @@ import { SearchModule } from './elasticsearch/elasticsearch.module';
     OrderModule,
     SocketModule,
     UploadModule,
-    LivestreamModule,
     CommentModule,
     NewsModule,
     SearchModule,
