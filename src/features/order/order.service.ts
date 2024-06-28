@@ -158,6 +158,9 @@ export class OrderService {
         where: {
           userId,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
 
       if (orders) {
@@ -184,7 +187,11 @@ export class OrderService {
 
   async getAllOrderSystem() {
     try {
-      const orders = await this.prismaService.order.findMany();
+      const orders = await this.prismaService.order.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
       if (orders) {
         return {
           type: 'Success',

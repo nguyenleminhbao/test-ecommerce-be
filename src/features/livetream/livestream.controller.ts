@@ -1,7 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { LivestreamService } from './livestream.service';
-import { IUser } from 'src/common/interfaces/user.interface';
-import { User } from 'src/core/decorators/user.decorator';
 import { Public } from 'src/core/decorators/public.decorator';
 import { StreamCallbackDto } from './dto/streamCallback.dto';
 

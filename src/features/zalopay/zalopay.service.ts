@@ -3,7 +3,6 @@ import axios from 'axios';
 import { CallbackDto } from './dto/callback.dto';
 import * as CryptoJS from 'crypto-js';
 import * as moment from 'moment';
-import * as qs from 'qs';
 import { IUser } from 'src/common/interfaces/user.interface';
 import { IZALOPAY_ORDER } from 'src/common/interfaces/zalopay.interface';
 import { BeforeOrderDto } from './dto/before-order.dto';
@@ -198,7 +197,10 @@ export class ZaloPayService {
   async callbackPayment(dto: CallbackDto) {
     try {
       const { data: dataStr, mac: reqMac } = dto;
-      let mac = CryptoJS.HmacSHA256(dataStr, process.env.ZALO_KEY2).toString();
+      const mac = CryptoJS.HmacSHA256(
+        dataStr,
+        process.env.ZALO_KEY2,
+      ).toString();
 
       console.log('run callback');
 
@@ -216,7 +218,7 @@ export class ZaloPayService {
       } else {
         // thanh toán thành công
         // merchant cập nhật trạng thái cho đơn hàng
-        let order = JSON.parse(dataStr) as IZALOPAY_ORDER;
+        const order = JSON.parse(dataStr) as IZALOPAY_ORDER;
 
         console.log(order);
         const embed_data: {
@@ -254,7 +256,7 @@ export class ZaloPayService {
 
   async getBanks() {
     try {
-      let reqtime = Date.now();
+      const reqtime = Date.now();
       const params = {
         appid: process.env.ZALO_APP_ID,
         reqtime: reqtime, // miliseconds

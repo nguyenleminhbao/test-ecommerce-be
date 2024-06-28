@@ -3,7 +3,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { SocketGateWay } from '../socket/socket.gateway';
-import { StreamCallbackDto } from './dto/streamCallback.dto';
 
 @Injectable()
 export class DetailUserService {

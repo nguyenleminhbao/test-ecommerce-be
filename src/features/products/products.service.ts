@@ -37,7 +37,7 @@ export class ProductsService {
     // get all key of shop in redis
     const shopKeys = await this.redisService.getKeys('shop:*');
 
-    let listProduct = [];
+    const listProduct = [];
     await Promise.all(
       shopKeys.map(async (shopKey) => {
         const key = getKeyShop(shopKey);

@@ -3,8 +3,6 @@ import { DetailUserService } from './detail-user.service';
 import { User } from 'src/core/decorators/user.decorator';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { Public } from 'src/core/decorators/public.decorator';
-import { StreamCallbackDto } from './dto/streamCallback.dto';
 
 @Controller('detail-user')
 export class DetailUserController {

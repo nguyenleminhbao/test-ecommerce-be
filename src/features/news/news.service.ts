@@ -3,8 +3,6 @@ import { PrismaService } from 'src/database/prisma.service';
 import { CreateReelDto } from './dto/create-reel.dto';
 import { STATUS, TYPE_COMMENT } from '@prisma/client';
 import { CreateFeedDto } from './dto/create-feed.dto';
-//import { UploadService } from '../upload/upload.service';
-import { getPublicIdFromUrl } from 'src/utils/get-publicId-from-url';
 import { SearchService } from '../elasticsearch/elasticsearch.service';
 import { ElasticsearchIndex } from 'src/common/enum/elasticsearch-index.enum';
 import { UpdateReelDto } from './dto/update-reel.dto';
@@ -393,7 +391,7 @@ export class NewsService {
 
   async deleteReel(reelId: string) {
     try {
-      const deleteComments = await this.prismaService.comment.deleteMany({
+      await this.prismaService.comment.deleteMany({
         where: {
           etag: reelId,
           typeComment: TYPE_COMMENT.REEL,
@@ -412,7 +410,7 @@ export class NewsService {
 
       await this.searchService.deleteDocument(ElasticsearchIndex.REEL, reel.id);
 
-      const deleteReel = await this.prismaService.reel.delete({
+      await this.prismaService.reel.delete({
         where: {
           id: reelId,
         },
@@ -434,7 +432,7 @@ export class NewsService {
 
   async deleteFeed(feedId: string) {
     try {
-      const deleteComments = await this.prismaService.comment.deleteMany({
+      await this.prismaService.comment.deleteMany({
         where: {
           etag: feedId,
           typeComment: TYPE_COMMENT.FEED,
@@ -453,7 +451,7 @@ export class NewsService {
 
       await this.searchService.deleteDocument(ElasticsearchIndex.FEED, feed.id);
 
-      const deleteFeed = await this.prismaService.feed.delete({
+      await this.prismaService.feed.delete({
         where: {
           id: feedId,
         },
@@ -558,7 +556,7 @@ export class NewsService {
 
       // delete image on firebase
       const publicId = dto.idVideoOld;
-      const { data } = await axios.post(
+      await axios.post(
         `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
         publicId,
       );
@@ -592,7 +590,7 @@ export class NewsService {
 
       // delete video on firebase
       const publicId = dto.idImageOld;
-      const { data } = await axios.post(
+      await axios.post(
         `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
         publicId,
       );

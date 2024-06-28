@@ -509,7 +509,7 @@ export class ShopService {
 
       // delete image on firebase
       const publicId = dto.idImageOld;
-      const { data } = await axios.post(
+      await axios.post(
         `${process.env.SUB_UPLOAD_MODULE_HOST}/upload/delete-file-v2`,
         publicId,
       );

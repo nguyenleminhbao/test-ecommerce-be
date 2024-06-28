@@ -42,7 +42,7 @@ export class SearchService {
 
   async search(type: ElasticsearchIndex, titleSearch: string) {
     try {
-      let results = (
+      const results = (
         await this.client.search({
           index: type,
           query: {

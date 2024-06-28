@@ -17,9 +17,7 @@ export class ShopifyService {
     try {
       const shop = await this.getShop(shopId);
 
-      const { data, status } = await axios.get(
-        `${shop.baseUrl}/${endObject}.json`,
-      );
+      const { data } = await axios.get(`${shop.baseUrl}/${endObject}.json`);
       if (data) return data;
       return null;
     } catch (err) {
@@ -34,7 +32,7 @@ export class ShopifyService {
   async getDetail(shopId: string, endObject: SHOPIFY_OBJECT, id: string) {
     try {
       const shop = await this.getShop(shopId);
-      const { data, status } = await axios.get(
+      const { data } = await axios.get(
         `${shop.baseUrl}/${endObject}.json/${id}.json`,
       );
       if (data) return data;
@@ -51,7 +49,7 @@ export class ShopifyService {
   async createData<T>(shopId: string, endObject: SHOPIFY_OBJECT, newData: T) {
     try {
       const shop = await this.getShop(shopId);
-      const { data, status } = await axios.post(
+      const { data } = await axios.post(
         `${shop.baseUrl}/${endObject}.json`,
         newData,
       );
@@ -74,7 +72,7 @@ export class ShopifyService {
   ) {
     try {
       const shop = await this.getShop(shopId);
-      const { data, status } = await axios.patch(
+      const { data } = await axios.patch(
         `${shop.baseUrl}/${endObject}.json/${id}.json`,
         updateData,
       );
@@ -92,7 +90,7 @@ export class ShopifyService {
   async deleteData(shopId: string, endObject: SHOPIFY_OBJECT, id: string) {
     try {
       const shop = await this.getShop(shopId);
-      const { data, status } = await axios.delete(
+      const { data } = await axios.delete(
         `${shop.baseUrl}/${endObject}/${id}.json`,
       );
 
