@@ -83,16 +83,30 @@ export class LivestreamService {
           isHost: true,
         },
       });
-      return {
-        type: 'Success',
-        code: HttpStatus.OK,
-        message: listLivestream.map((ele) => {
+
+      const streams = await Promise.all(
+        listLivestream.map(async (ele) => {
+          const shop = await this.prismaService.shop.findFirst({
+            where: {
+              shopName: ele.shopName,
+            },
+            select: {
+              shopAvatar: true,
+            },
+          });
           return {
             roomId: ele.roomId,
             userId: ele.userId,
             shopName: ele.shopName,
+            shopAvatar: shop.shopAvatar,
           };
         }),
+      );
+
+      return {
+        type: 'Success',
+        code: HttpStatus.OK,
+        message: streams,
       };
     } catch (err) {
       return {
