@@ -1,0 +1,8 @@
+1. Netword token: 672ab806842685e56da111554de1954936135651d63585f0d63452bdf85765d5
+2. docker run: docker run --name es-apliconcon --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+2. username: elastic
+4. password: 0NLY2HelMdO92QRmiJod
+5. http CA : 0801ea96a51bf0e86b2645a87d4bd8863ecbb3e7d843f63ffaa4ef6d2d7983b9
+6. token: eyJ2ZXIiOiI4LjE0LjAiLCJhZHIiOlsiMTcyLjE4LjAuMjo5MjAwIl0sImZnciI6IjA4MDFlYTk2YTUxYmYwZTg2YjI2NDVhODdkNGJkODg2M2VjYmIzZTdkODQzZjYzZmZhYTRlZjZkMmQ3OTgzYjkiLCJrZXkiOiJ3eWtzU1pBQnkteTRTY1JDUWxURDp2dERNZjVJV1QwcWgyLUdfdnp6UFdBIn0=
+7. reset password elasticsearch: /usr/share/elasticsearch/bin/elasticsearch-reset-password -i -u elastic --url https://localhost:9200
+8. reset token for kibana: /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana --url https://localhost:9200
